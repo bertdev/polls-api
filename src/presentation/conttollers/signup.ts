@@ -4,6 +4,7 @@ import { badRequest, serverError } from '../helpers/http-helper'
 
 export class SignUpController implements Controller {
   constructor (private readonly emailValidator: EmailValidator) {}
+
   handle (httpRequest: HttpRequest): HttpResponse {
     try {
       const requiredFields = ['name', 'email', 'password', 'confirmationPassword']
