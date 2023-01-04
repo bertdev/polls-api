@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/bertdev/polls-api#readme",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.18",
     "@types/validator": "^13.7.10",
@@ -41,6 +42,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "validator": "^13.7.0"
   }
 }
