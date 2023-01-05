@@ -10,15 +10,13 @@ describe('Account MongoRepository', () => {
     await mongoHelper.disconnect()
   })
 
-  test('Should return an account on success', async () => {
+  test('Should return an new account id on success', async () => {
     const sut = new AccountMongoRepository()
-    const account = await sut.add({
+    const accountId = await sut.add({
       name: 'valid_name',
       email: 'valid_email@mail.com',
       password: 'hashed_password'
     })
-    expect(account.id).toBeTruthy()
-    expect(account.name).toBe('valid_name')
-    expect(account.email).toBe('valid_email@mail.com')
+    expect(accountId).toBeTruthy()
   })
 })

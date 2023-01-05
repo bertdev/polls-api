@@ -8,7 +8,7 @@ export const mongoHelper = {
     this.db = await this.client.db()
   },
   async disconnect (): Promise<void> {
-    await this.client.close
+    await this.client.close()
   },
   async getCollection (name: string): Promise<Collection> {
     return this.db.collection(name)
