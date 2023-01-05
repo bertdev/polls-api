@@ -1,14 +1,11 @@
 import { AddAccountRepository } from './../../../../data/protocols/add-account-repository'
 import { AddAccountModel } from '../../../../domain/use-cases/add-acount'
-import { AccountModel } from '../../../../domain/models/account'
+import { mongoHelper } from '../helpers/mongo-helper'
 
 export class AccountMongoRepository implements AddAccountRepository {
-  async add (account: AddAccountModel): Promise<AccountModel> {
-    return await new Promise((resolve) => resolve({
-      id: 'any_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'hashed_password'
-    }))
+  async add (account: AddAccountModel): Promise<string> {
+    const accountCollection = await mongoHelper.getCollection('accounts')
+    const result = await accountCollection.insertOne(account)
+    return result.insertedId.id.toString('hex')
   }
 }
