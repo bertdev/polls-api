@@ -85,4 +85,25 @@ describe('Log Controller decorator', () => {
     await sut.handle(httpRequest)
     expect(logSpy).toHaveBeenCalledWith('fake_stack')
   })
+
+  test('Should call LogErrorRespository with a generic message if controller returns 500 and error has no stack', async () => {
+    const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
+    jest.spyOn(controllerStub, 'handle')
+      .mockImplementationOnce(async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+        return await new Promise((resolve) => {
+          return resolve({ statusCode: 500, body: new ServerError(undefined) })
+        })
+      })
+    const logSpy = jest.spyOn(logErrorRepositoryStub, 'log')
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
+        confirmationPassword: 'valid_password'
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(logSpy).toHaveBeenCalledWith('error without stack')
+  })
 })
