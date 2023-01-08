@@ -7,14 +7,18 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
+  const controllerStub = makeController()
+  const sut = new LogControllerDecorator(controllerStub)
+  return { sut, controllerStub }
+}
+
+const makeController = (): Controller => {
   class ControllerStub implements Controller {
     async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
       return await new Promise((resolve) => resolve({ statusCode: 200, body: { ok: 'ok' } }))
     }
   }
-  const controllerStub = new ControllerStub()
-  const sut = new LogControllerDecorator(controllerStub)
-  return { sut, controllerStub }
+  return new ControllerStub()
 }
 
 describe('Log Controller decorator', () => {
