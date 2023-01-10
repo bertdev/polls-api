@@ -28,7 +28,7 @@ const makeController = (): Controller => {
 
 const makeLogErrorRepository = (): LogErrorRepository => {
   class LogErrorRepositoryStub implements LogErrorRepository {
-    async log (stack: string): Promise<void> {
+    async logError (stack: string): Promise<void> {
     }
   }
   return new LogErrorRepositoryStub()
@@ -67,9 +67,9 @@ describe('Log Controller decorator', () => {
           return resolve(serverError(new ServerError('fake_stack')))
         })
       })
-    const logSpy = jest.spyOn(logErrorRepositoryStub, 'log')
+    const logErrorSpy = jest.spyOn(logErrorRepositoryStub, 'logError')
     await sut.handle(makeFakeHttpRequest())
-    expect(logSpy).toHaveBeenCalledWith('fake_stack')
+    expect(logErrorSpy).toHaveBeenCalledWith('fake_stack')
   })
 
   test('Should call LogErrorRespository with a generic message if controller returns 500 and error has no stack', async () => {
@@ -80,8 +80,8 @@ describe('Log Controller decorator', () => {
           return resolve(serverError(new ServerError(undefined)))
         })
       })
-    const logSpy = jest.spyOn(logErrorRepositoryStub, 'log')
+    const logErrorSpy = jest.spyOn(logErrorRepositoryStub, 'logError')
     await sut.handle(makeFakeHttpRequest())
-    expect(logSpy).toHaveBeenCalledWith('error without stack')
+    expect(logErrorSpy).toHaveBeenCalledWith('error without stack')
   })
 })
