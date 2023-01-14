@@ -1,12 +1,12 @@
 import { ValidationComposite } from './validation-composite'
 import { Validation } from './validation'
 
-interface SutType {
+interface SutTypes {
   sut: ValidationComposite
   validationStub: Validation
 }
 
-const makeSut = (): SutType => {
+const makeSut = (): SutTypes => {
   const validationStub = makeValidationStub()
   const sut = new ValidationComposite([validationStub])
   return {
@@ -30,5 +30,11 @@ describe('ValidationComposite', () => {
     jest.spyOn(validationStub, 'validate').mockReturnValue(new Error('any_error'))
     const error = sut.validate({ ok: 'ok' })
     expect(error).toEqual(new Error('any_error'))
+  })
+
+  test('Should return null on success', () => {
+    const { sut } = makeSut()
+    const result = sut.validate({ ok: 'ok' })
+    expect(result).toBeNull()
   })
 })
