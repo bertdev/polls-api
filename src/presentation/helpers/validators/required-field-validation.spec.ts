@@ -12,7 +12,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('EmailValidation', () => {
+describe('RequiredFieldValidation', () => {
   test('Should return MissingParamError if validation fails', () => {
     const { sut } = makeSut()
     const error = sut.validate({ name: 'any_name' })
