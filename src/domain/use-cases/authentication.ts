@@ -1,3 +1,8 @@
+export interface AuthenticationModel {
+  email: string
+  password: string
+}
+
 export interface Authentication {
-  auth: (email: string, passwor: string) => Promise<string>
+  auth: (autentication: AuthenticationModel) => Promise<string>
 }
