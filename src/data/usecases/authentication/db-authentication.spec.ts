@@ -3,21 +3,25 @@ import { AccountModel } from '../../../domain/models/account'
 import { DbAuthentication } from './db-authentication'
 import { AuthenticationModel } from '../../../domain/use-cases/authentication'
 import { HashCompare } from './../../protocols/criptography/hash-compare'
+import { TokenGenerator } from './../../protocols/criptography/token-generator'
 
 interface SutTypes {
   sut: DbAuthentication
   loadAccountByEmailRespositoryStub: LoadAccountByEmailRepository
   hashCompareStub: HashCompare
+  tokenGeneratorStub: TokenGenerator
 }
 
 const makeSut = (): SutTypes => {
+  const tokenGeneratorStub = makeTokenGenerator()
   const hashCompareStub = makeHashCompare()
   const loadAccountByEmailRespositoryStub = makeLoadAccountByEmailRespository()
-  const sut = new DbAuthentication(loadAccountByEmailRespositoryStub, hashCompareStub)
+  const sut = new DbAuthentication(loadAccountByEmailRespositoryStub, hashCompareStub, tokenGeneratorStub)
   return {
     sut,
     loadAccountByEmailRespositoryStub,
-    hashCompareStub
+    hashCompareStub,
+    tokenGeneratorStub
   }
 }
 
@@ -37,6 +41,15 @@ const makeHashCompare = (): HashCompare => {
     }
   }
   return new HashCompareStub()
+}
+
+const makeTokenGenerator = (): TokenGenerator => {
+  class TokenGeneratorStub implements TokenGenerator {
+    async generate (id: string): Promise<string> {
+      return 'access_token'
+    }
+  }
+  return new TokenGeneratorStub()
 }
 
 const makeFakeAccount = (): AccountModel => {
@@ -96,5 +109,12 @@ describe('DbAuthentication UseCase', () => {
     jest.spyOn(hashCompareStub, 'compare').mockResolvedValueOnce(false)
     const accessToken = await sut.auth(makeFakeAuthentication())
     expect(accessToken).toBeNull()
+  })
+
+  test('Should call TokenGenerator with correct id', async () => {
+    const { sut, tokenGeneratorStub } = makeSut()
+    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+    await sut.auth(makeFakeAuthentication())
+    expect(generateSpy).toHaveBeenCalledWith('account_id')
   })
 })
