@@ -3,8 +3,11 @@ import { LoadAccountByEmailRepository } from './../../protocols/db/load-account-
 
 export class DbAuthentication implements Authentication {
   constructor (private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository) {}
-  async auth (autentication: AuthenticationModel): Promise<string> {
-    await this.loadAccountByEmailRepository.load(autentication.email)
+  async auth (autentication: AuthenticationModel): Promise<string | null> {
+    const account = await this.loadAccountByEmailRepository.load(autentication.email)
+    if (!account) {
+      return null
+    }
     return ''
   }
 }
