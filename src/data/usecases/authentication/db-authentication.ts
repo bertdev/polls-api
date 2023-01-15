@@ -1,13 +1,19 @@
 import { Authentication, AuthenticationModel } from './../../../domain/use-cases/authentication'
 import { LoadAccountByEmailRepository } from './../../protocols/db/load-account-by-email-repository'
+import { HashCompare } from './../../protocols/criptography/hash-compare'
 
 export class DbAuthentication implements Authentication {
-  constructor (private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository) {}
+  constructor (
+    private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
+    private readonly hashCompare: HashCompare
+  ) {}
+
   async auth (autentication: AuthenticationModel): Promise<string | null> {
     const account = await this.loadAccountByEmailRepository.load(autentication.email)
     if (!account) {
       return null
     }
+    await this.hashCompare.compare(autentication.password, account.password)
     return ''
   }
 }
