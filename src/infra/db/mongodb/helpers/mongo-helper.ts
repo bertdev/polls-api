@@ -1,4 +1,5 @@
 import { Collection, Db, MongoClient, InsertOneResult } from 'mongodb'
+import { AccountModel } from '../../../../domain/models/account'
 
 export const mongoHelper = {
   client: null as unknown as MongoClient,
@@ -22,5 +23,8 @@ export const mongoHelper = {
   },
   map (mongoResult: InsertOneResult): string {
     return mongoResult.insertedId.id.toString('hex')
+  },
+  mapAccount (mongoResult: AccountModel & { _id: string } | null): AccountModel | null {
+    return !mongoResult ? mongoResult : { id: mongoResult._id, email: mongoResult.email, name: mongoResult.name, password: mongoResult.password }
   }
 }
