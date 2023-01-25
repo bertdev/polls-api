@@ -1,7 +1,12 @@
 import { Validation } from '../../../presentation/protocols'
-import { ValidationComposite, RequiredFieldValidation, CompareFieldsValidation, EmailValidation } from '../../../presentation/helpers/validators'
+import {
+  ValidationComposite,
+  RequiredFieldValidation,
+  CompareFieldsValidation,
+  EmailValidation
+} from '../../../presentation/helpers/validators'
 import { EmailValidator } from '../../../presentation/protocols/email-validator'
-import { makeSignUpValidation } from './signup-validation'
+import { makeSignUpValidation } from './signup-validation-factory'
 
 jest.mock('../../../presentation/helpers/validators/validation-composite')
 
@@ -18,11 +23,19 @@ describe('SignUpValidation Factory', () => {
   test('Should call ValidationComposit with all validations', () => {
     makeSignUpValidation()
     const validations: Validation[] = []
-    const requiredFields = ['name', 'email', 'password', 'confirmationPassword']
-    requiredFields.forEach(fieldName => {
+    const requiredFields = [
+      'name',
+      'email',
+      'password',
+      'confirmationPassword'
+    ]
+    requiredFields.forEach((fieldName) => {
       validations.push(new RequiredFieldValidation(fieldName))
     })
-    const compareFieldsValidation = new CompareFieldsValidation('password', 'confirmationPassword')
+    const compareFieldsValidation = new CompareFieldsValidation(
+      'password',
+      'confirmationPassword'
+    )
     validations.push(compareFieldsValidation)
     const emailValidator = makeEmailValidator()
     const emailValidation = new EmailValidation('email', emailValidator)
