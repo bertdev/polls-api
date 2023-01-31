@@ -2,7 +2,7 @@ import request from 'supertest'
 import { mongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
 import { app } from './../config/app'
 
-describe('Signup routes', () => {
+describe('Login routes', () => {
   beforeAll(async () => {
     await mongoHelper.connect(global.__MONGO_URI__)
   })
@@ -15,15 +15,18 @@ describe('Signup routes', () => {
     const accountCollection = await mongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
-  test('Should return an account id on succes', async () => {
-    await request(app)
-      .post('/api/signup')
-      .send({
-        name: 'herbert',
-        email: 'mail_valid@email.com',
-        password: 'password',
-        confirmationPassword: 'password'
-      })
-      .expect(200)
+
+  describe('POST /signup', () => {
+    test('Should return 200 on signup', async () => {
+      await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'herbert',
+          email: 'mail_valid@email.com',
+          password: 'password',
+          confirmationPassword: 'password'
+        })
+        .expect(200)
+    })
   })
 })
